@@ -1,4 +1,4 @@
-(defproject babashka/clojure-lanterna "0.9.8-SNAPSHOT"
+(defproject babashka/clojure-lanterna "0.9.8"
   :description "A Clojure wrapper around the Lanterna terminal output library."
   :url "https://github.com/babashka/clojure-lanterna"
   :license {:name "LGPL"}
