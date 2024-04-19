@@ -123,12 +123,24 @@
   Options can contain any of the following:
 
   :fg - Foreground color.
-  Can be any one of (keys lanterna.constants/colors).
-  (default :default)
+   This can be either a keyword or a string.
+   If it's a keyword, it should be one of (keys lanterna.constants/colors).
+   Not all terminals support all colormodes, you can consult lanterna's 
+   [TextColor documentaion](https://mabe02.github.io/lanterna/apidocs/3.1/com/googlecode/lanterna/TextColor.html)
+   to learn more.
+   If it is a string, it must be in one of the following formats.
+
+   * \"blue\", a string matching a color constant.
+   * \"#1 \", a string consisting of an int between 0 and 255.
+     This will use the indexed colormode, looking up the color in the terminal's own theme.
+   * \"#a1a1a1\", a hex color code in a string. This draws using the color provided in RGB mode..
+
+   As an escape hatch, directly providing a TextColor will use that to draw instead.
+   an unparseable input will draw with (lanterna.constants/colors :default) or error.
+
 
   :bg - Background color.
-  Can be any one of (keys lanterna.constants/colors).
-  (default :default)
+  The same options for :fg, but will apply to the background instead.
 
   :styles - Styles to apply to the text.
   Can be a set containing some/none/all of (keys lanterna.constants/styles).
@@ -145,8 +157,8 @@
          (into-array SGR (map c/styles styles))
          col (int col)
          row (int row)
-         fg ^TextColor (c/colors fg)
-         bg ^TextColor (c/colors bg)]
+         fg  (t/parse-color fg)
+         bg  (t/parse-color bg)]
      (reduce (fn [acc ^java.lang.Character c]
                (let [col (:col acc)
                      row (:row acc)

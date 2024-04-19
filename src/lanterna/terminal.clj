@@ -6,7 +6,8 @@
    com.googlecode.lanterna.terminal.Terminal
    com.googlecode.lanterna.terminal.TerminalResizeListener
    com.googlecode.lanterna.terminal.ansi.UnixTerminal
-   com.googlecode.lanterna.terminal.ansi.CygwinTerminal)
+   com.googlecode.lanterna.terminal.ansi.CygwinTerminal
+   com.googlecode.lanterna.TextColor)
   (:require
    [lanterna.common :refer [parse-key block-on]]
    [lanterna.constants :as c]))
@@ -137,6 +138,27 @@
   [^Terminal terminal]
   (.flush terminal))
 
+(defn parse-color ^TextColor
+  "Takes a keyword, a string, or a TextColor, and returns a TextColor.
+   For keyword, it looks it up in lanterna.constants/colors.
+   For a string, it parses it using the underlying java implementation.
+   For a text color, it returns it unchanged.
+   
+   Returns (lanterna.constants/colors :default) or errors.
+   "
+  [inp-color]
+  (cond
+    (instance? TextColor inp-color)
+    inp-color
+
+    (keyword? inp-color)
+    (c/colors inp-color)
+
+    (string? inp-color)
+    (com.googlecode.lanterna.TextColor$Factory/fromString inp-color)
+
+    :else
+    (c/colors :default)))
 
 (defn set-fg-color [^Terminal terminal color]
   (.setForegroundColor terminal (c/colors color)))
